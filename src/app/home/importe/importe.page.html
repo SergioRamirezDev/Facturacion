@@ -1,0 +1,32 @@
+<ion-list>
+    <ion-list-header>Anadir Concepto</ion-list-header>
+    <ion-item>
+        <ion-textarea (keyup.enter)="add()" [value]="data.concepto" (ionInput)="data.concepto = $event.target.value" required maxlength="255"
+            type="text" inputmode="text" clearInput="true" placeholder="Concepto">
+        </ion-textarea>
+    </ion-item>
+    <ion-item>
+        <ion-input (keyup.enter)="add()" [value]="data.cantidad" (ionInput)="data.cantidad = $event.target.value" required type="number"
+            inputmode="numeric" clearInput="true" placeholder="Cantidad"></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-input (keyup.enter)="add()" [value]="data.precio" (ionInput)="data.precio = $event.target.value" required type="number"
+            inputmode="decimal" clearInput="true" placeholder="Precio Unitario"></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-label>Total</ion-label>
+        <ion-label style="text-align: end;" slot="end" color="danger"><b>${{data.cantidad * data.precio}}</b>
+        </ion-label>
+    </ion-item>
+    <ion-item lines="none">
+        <ion-buttons slot="end">
+            <ion-button [disabled]="!(data.concepto && data.cantidad && data.precio)" (click)="add()" slot="end"
+                color="success" fill="clear">
+                <ion-icon name="add"></ion-icon>{{created ? "Update" : "Add"}}
+            </ion-button>
+            <ion-button (click)="dismiss()" slot="end" color="danger" fill="clear">
+                <ion-icon name="close"></ion-icon>Cancel
+            </ion-button>
+        </ion-buttons>
+    </ion-item>
+</ion-list>

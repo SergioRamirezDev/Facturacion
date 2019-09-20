@@ -1,5 +1,7 @@
 {
   "name": "facturacion",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

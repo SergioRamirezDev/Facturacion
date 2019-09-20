@@ -1,14 +1,118 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-input (ionInput)="facturacion.iva = $event.target.value" type="number" min="0" [value]="facturacion.iva"
+      slot="end">
+    </ion-input>
+    <ion-label style="margin-right: 10px;" slot="end">&nbsp;% IVA</ion-label>
     <ion-title>
-      Ionic Blank
+      Facturacion
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div class="ion-padding">
-    The world is your oyster.
-    <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
+  <ion-slides *ngIf="facturacion.conceptos.length == 0" style="height: 100%;">
+    <ion-slide>
+      <h3>No hay conceptos para faturar</h3>
+    </ion-slide>
+  </ion-slides>
+  <div class="ion-padding" *ngIf="facturacion.conceptos.length > 0">
+    <ion-list-header>
+      <ion-label><b>1. Datos de Cliente</b></ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label>RFC</ion-label>
+      <ion-input (keyup.enter)="postFacturacion()" type="text" inputmode="text"
+        (ionInput)="facturacion.rfc = $event.target.value" placeholder="Escribe el RFC del cliente">
+      </ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Correo</ion-label>
+      <ion-input (keyup.enter)="postFacturacion()" type="email" inputmode="email"
+        (ionInput)="facturacion.email = $event.target.value" placeholder="Escribe el Correo Electronico del Cliente">
+      </ion-input>
+    </ion-item>
+    <ion-list-header>
+      <ion-label><b>2. Englose</b></ion-label>
+    </ion-list-header>
+    <ion-row style="background: #4076db;font-weight:bold;color:white;margin-top:5px;">
+      <ion-col size="3">
+        Concepto
+      </ion-col>
+      <ion-col size="2" style="text-align: right;">
+        Cant
+      </ion-col>
+      <ion-col size="2" style="text-align: right;">
+        Precio
+      </ion-col>
+      <ion-col size="2" style="text-align: right;">
+        Total
+      </ion-col>
+      <ion-col size="2" style="text-align: right;">
+        Edit
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let concepto of facturacion.conceptos;let i = index;">
+      <ion-col size="3" style="display: flex;align-items: center;border-right: 1px solid lightgray;">
+        {{concepto.concepto}}
+      </ion-col>
+      <ion-col size="2" style="display: flex;align-items: center;text-align: right;">
+        {{concepto.cantidad}}
+      </ion-col>
+      <ion-col size="2" style="display: flex;align-items: center;text-align: right;">
+        ${{concepto.precio}}
+      </ion-col>
+      <ion-col size="2" style="display: flex;align-items: center;text-align: right;background: #eaeaea;">
+        ${{concepto.total}}
+      </ion-col>
+      <ion-col size="2">
+        <ion-buttons>
+          <ion-button color="secondary" fill="clear" size="small" (click)="presentPopover(concepto,i)">
+            <ion-icon slot="icon-only" name="create"></ion-icon>
+          </ion-button>
+          <ion-button color="danger" fill="clear" size="small" (click)="trash(i)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-col>
+    </ion-row>
+    <ion-row style="border-top: 1px solid;">
+      <ion-col size="1">
+
+      </ion-col>
+      <ion-col size="3" style="text-align: center;">
+        Subtotal
+      </ion-col>
+      <ion-col size="3" style="text-align: center;">
+        Iva (%{{facturacion.iva}})
+      </ion-col>
+      <ion-col size="5" style="text-align: center;">
+        Total
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="1">
+
+      </ion-col>
+      <ion-col size="3" style="border-top: 1px solid rgb(202, 202, 202);text-align: center;">
+        ${{facturacion.subtotal | toDecimal}}
+      </ion-col>
+      <ion-col size="3" style="border-top: 1px solid rgb(202, 202, 202);text-align: center;">
+        +${{facturacion.totaliva | toDecimal}}
+      </ion-col>
+      <ion-col size="5" style="border-top: 1px solid rgb(202, 202, 202);text-align: center;">
+        <b>${{facturacion.total | toDecimal}}</b>
+      </ion-col>
+    </ion-row>
+    <ion-buttons>
+      <ion-button (click)="clear()" color="danger" expand="block" fill="solid">Cancelar</ion-button>
+      <ion-button [disabled]="!(facturacion.conceptos.length > 0 && facturacion.rfc && facturacion.email)"
+        (click)="postFacturacion()" color="success" expand="block" fill="solid">Enviar</ion-button>
+    </ion-buttons>
   </div>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="danger" (click)="presentPopover($event,-1)">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
